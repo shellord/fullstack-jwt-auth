@@ -13,6 +13,8 @@ _This Project is under progress_
 - Prisma
 - Postgres
 - JWT
+- Bcrypt
+- Zod
 
 ## Features
 

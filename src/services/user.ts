@@ -20,7 +20,7 @@ export const createUser = async ({
       },
     })
     if (existingUser) {
-      throw CreateError(409, 'Username or Email already exists')
+      throw CreateError(409, 'User already exists')
     }
     const hashedPassword = await bcrypt.hash(password, 10)
     const user = await prisma.user.create({
@@ -38,7 +38,7 @@ export const createUser = async ({
 
 export const generateAccessToken = (payload: TokenPayloadInput) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET!, {
-    expiresIn: '15m',
+    expiresIn: '30s',
   })
 }
 

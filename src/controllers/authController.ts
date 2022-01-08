@@ -9,6 +9,8 @@ import {
 import CreateError from 'http-errors'
 import { TokenPayloadInput } from '../schema/userSchema'
 
+const refresthTokenList: String[] = []
+
 export const signup = async (
   req: Request,
   res: Response,
@@ -19,6 +21,7 @@ export const signup = async (
     const { id, username, email } = user
     const accessToken = generateAccessToken({ id, username, email })
     const refreshToken = generateRefreshToken({ id, username, email })
+    refresthTokenList.push(refreshToken)
     res.json({
       message: 'User created successfully',
       accessToken,
@@ -39,6 +42,7 @@ export const login = async (
     const { id, username, email } = user
     const accessToken = generateAccessToken({ id, username, email })
     const refreshToken = generateRefreshToken({ id, username, email })
+    refresthTokenList.push(refreshToken)
     res.json({
       message: 'User logged in successfully',
       accessToken,
@@ -49,6 +53,22 @@ export const login = async (
   }
 }
 
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const refreshToken = req.body.refreshToken
+    const index = refresthTokenList.indexOf(refreshToken)
+    if (index > -1) {
+      refresthTokenList.splice(index, 1)
+    }
+    res.json({ message: 'User logged out successfully' })
+  } catch (error) {
+    next(error)
+  }
+}
 export const refreshToken = async (
   req: Request,
   res: Response,
@@ -56,7 +76,11 @@ export const refreshToken = async (
 ) => {
   try {
     const { refreshToken } = req.body
+
     if (!refreshToken) throw CreateError(400, 'Refresh token is required')
+    if (!refresthTokenList.includes(refreshToken)) {
+      throw CreateError(401, 'Refresh token is invalid')
+    }
     const payload = verifyRefreshToken(refreshToken)
     const { id, username, email } = payload as TokenPayloadInput
     const accessToken = generateAccessToken({ id, username, email })
