@@ -16,10 +16,21 @@ JWT Authentication server
 
 - JWT authentication
 
+## Requirements
+
+- Nodejs
+
 ## Installation
 
-> npm install
+- Create .env file from .env.example
 
-## Usage
+- You can use the following command to generate a random string for JWT secret [optional] to use in .env file.
 
-> npm start
+  > require('crypto').randomBytes(64).toString('hex')
+
+- Install dependencies
+
+  > npm install
+
+- Run the nodejs server and react client
+  > npm run dev
