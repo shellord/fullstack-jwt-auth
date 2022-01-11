@@ -1,6 +1,6 @@
 import express from 'express'
 import authRouter from './auth'
-import postRouter from './posts'
+import protectedRouter from './protected'
 
 import createError from 'http-errors'
 
@@ -11,7 +11,7 @@ router.get('/', (_, res) => {
 })
 
 router.use('/auth', authRouter)
-router.use('/posts', postRouter)
+router.use('/protected', protectedRouter)
 
 router.use((_, res, next) => {
   next(createError(404))

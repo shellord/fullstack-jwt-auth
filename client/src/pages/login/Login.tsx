@@ -1,8 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './Login.module.css'
 import Layout from '../../components/Layout/Layout'
+import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const Login: React.FC = () => {
+  const navigate = useNavigate()
+  const { isLoggedin } = useAuth()
+  useEffect(() => {
+    if (isLoggedin) {
+      navigate('/')
+    }
+  }, [isLoggedin, navigate])
+
   return (
     <Layout>
       <div className={styles.container}>

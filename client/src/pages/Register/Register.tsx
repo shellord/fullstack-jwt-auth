@@ -1,33 +1,30 @@
 import React from 'react'
 import Layout from '../../components/Layout/Layout'
 import styles from './Register.module.css'
-import axios, { AxiosError } from 'axios'
 import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
-  const { accessToken, changeAccessToken } = useAuth()
-
+  const navigate = useNavigate()
+  const { register } = useAuth()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const { username, email, password } = e.target as typeof e.target & {
+    const formData = e.target as typeof e.target & {
       username: { value: string }
       email: { value: string }
       password: { value: string }
     }
+    const username = formData.username.value
+    const email = formData.email.value
+    const password = formData.password.value
     try {
-      const response = await axios.post('http://localhost:4000/auth/signup', {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-      })
-      if (response.status === 200) {
-        console.log(response.data.accessToken)
-        console.log(response.data.refreshToken)
+      const response = await register({ username, email, password })
+      if (response) {
+        navigate('/')
       }
     } catch (e) {
-      const err = e as AxiosError
-      alert(err.response?.data.error)
+      alert(e)
     }
   }
   return (
@@ -48,7 +45,7 @@ const Register = () => {
               <label htmlFor='password'>Password</label>
               <input type='password' id='password' />
             </div>
-            <input type='submit' className={styles.button} value='Log in' />
+            <input type='submit' className={styles.button} value='Register' />
           </form>
         </div>
       </div>

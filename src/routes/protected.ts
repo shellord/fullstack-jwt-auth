@@ -1,9 +1,9 @@
 import express from 'express'
-import { allPosts } from '../controllers/postsController'
+import { data } from '../controllers/postsController'
 import { authenticateToken } from '../middlewares/authenticateToken'
 
 const router = express.Router()
 
-router.post('/all', authenticateToken, allPosts)
+router.post('/data', authenticateToken, data)
 
 export default router

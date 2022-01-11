@@ -8,7 +8,6 @@ import {
 } from '../services/user'
 import CreateError from 'http-errors'
 import { TokenPayloadInput } from '../schema/userSchema'
-
 const refresthTokenList: String[] = []
 
 export const signup = async (
@@ -22,6 +21,9 @@ export const signup = async (
     const accessToken = generateAccessToken({ id, username, email })
     const refreshToken = generateRefreshToken({ id, username, email })
     refresthTokenList.push(refreshToken)
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+    })
     res.json({
       message: 'User created successfully',
       accessToken,
@@ -59,11 +61,12 @@ export const logout = async (
   next: NextFunction
 ) => {
   try {
-    const refreshToken = req.body.refreshToken
+    const { refreshToken } = req.cookies
     const index = refresthTokenList.indexOf(refreshToken)
     if (index > -1) {
       refresthTokenList.splice(index, 1)
     }
+    res.clearCookie('refreshToken')
     res.json({ message: 'User logged out successfully' })
   } catch (error) {
     next(error)
@@ -75,8 +78,7 @@ export const refreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.body
-
+    const { refreshToken } = req.cookies
     if (!refreshToken) throw CreateError(400, 'Refresh token is required')
     if (!refresthTokenList.includes(refreshToken)) {
       throw CreateError(401, 'Refresh token is invalid')
@@ -90,6 +92,7 @@ export const refreshToken = async (
       accessToken,
     })
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
