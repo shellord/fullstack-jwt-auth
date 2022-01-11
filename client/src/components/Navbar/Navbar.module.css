@@ -1,0 +1,18 @@
+.container {
+  background-color: rgb(39, 34, 34);
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.navItem {
+  text-decoration: none;
+  margin: 1rem;
+  color: wheat;
+}
